@@ -9,6 +9,7 @@ return [
 		'index',
 		'dialog',
 		'new',
+		'sse'
 	],
 	
 	'guest' => [

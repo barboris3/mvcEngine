@@ -28,6 +28,17 @@ class View
 		exit(json_encode($methods));
 	}
 	
+	public function sseHeaders()
+	{
+		header('Content-Type: text/event-stream');
+		header('Cache-Control: no-cache');
+	}
+	
+	public function sse($data)
+	{
+		echo "data:".$data."\n\n";
+		flush();
+	}
 	
 	public function redirect($destination)
 	{

@@ -3,7 +3,9 @@ namespace application\models;
 use application\core\model;
 
 class ModelMessages extends Model
-{	
+{
+	protected $qtyOfMsg;
+	
 	public function _default($params = null)
 	{
 		$result = $this->db->fetch_All(
@@ -156,5 +158,45 @@ class ModelMessages extends Model
 	
 	public function checkIsMessageIsset($message) {
 		return trim($message) === '';
+	}
+	
+	public function getNewMessage()
+	{
+		$dialog = explode('/', $_SERVER['REQUEST_URI'])[3];
+		$newquantity = $this->db->get_rowCount(
+			"SELECT `sender`,`reciever`,`message`,`date` FROM `messages` 
+			WHERE (`sender` = :login AND `del_sender` = 0 OR `reciever` = :login AND `del_reciever` = 0) AND `dialog` = :dialog",
+			[
+				'login' => $_SESSION['user']['login'],
+				'dialog' => $dialog
+			]
+		);
+		$this->qtyOfMsg = $this->qtyOfMsg ?? $newquantity;
+		if($this->qtyOfMsg == $newquantity) {
+			return;
+		}
+		
+		$this->db->execute_query(
+			"UPDATE `messages` SET `read_reciever` = '1' 
+			WHERE `dialog` = :dialog AND `reciever` = :reciever",
+			[
+				'dialog' => $dialog,
+				'reciever' => $_SESSION['user']['login']
+			]
+		);
+		
+		$diff = $newquantity - $this->qtyOfMsg;
+		$oldquantity = $this->qtyOfMsg;
+		$this->qtyOfMsg = $newquantity;
+		return $this->db->fetch_All(
+			"SELECT `sender`,`message`,`date` FROM `messages` 
+			WHERE (`sender` = :login AND `del_sender` = 0 OR `reciever` = :login AND `del_reciever` = 0) AND `dialog` = :dialog LIMIT :old, :diff",
+			[
+				'login' => $_SESSION['user']['login'],
+				'dialog' => $dialog,
+				'old' => $oldquantity,
+				'diff' => $diff
+			]
+		);
 	}
 }

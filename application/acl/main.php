@@ -15,14 +15,14 @@ return [
 	],
 	
 	'authorize' => [
-		
+		// 'index',
 	],
 	
 	'guest' => [
-		
+		// 'index',
 	],
 	
 	'admin' => [
-		
+		// 'admin'
 	],
 ];
