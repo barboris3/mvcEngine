@@ -34,10 +34,13 @@ class ControllerMessages extends Controller
 				'id' => explode('/', $_SERVER['REQUEST_URI'])[2]
 				]
 			);
-			$this->view->location($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+			$this->view->methods(
+				[
+					'methods' => ['resetForm']
+				]);
 		}
 		
-		$this->view->render('messages_dialog', $this->model->getDialog());
+		$this->view->render('messages_dialog', $this->model->getDialog(), ['scripts' => ['sseChat']]);
 	}
 	
 	public function action_new()
@@ -57,5 +60,19 @@ class ControllerMessages extends Controller
 			$this->view->location($_SERVER['HTTP_HOST'].'/messages/'.$id['id']);
 		}
 		$this->view->render('messages_new', null);
+	}
+	
+	public function action_sse()
+	{
+		session_write_close();
+		$this->view->sseHeaders();
+		while(true) {
+			if($result = $this->model->getNewMessage()) {
+				$this->view->sse(json_encode($result));
+				flush();
+				ob_end_flush();
+			}
+			sleep(0.5);
+		}
 	}
 }

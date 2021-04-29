@@ -53,4 +53,7 @@ return [
 		'controller'=>'profile',
 		'action'=>'logout'],
 		
+	'messages/sse/\d+' => [
+		'controller'=>'messages',
+		'action'=>'sse'],
 ];

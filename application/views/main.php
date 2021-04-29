@@ -1,7 +1,6 @@
 <div class="page-content">
 	<div class="page-header">
-		My simple page
+		My simple engine
 		<hr class="hr-fat">
 	</div>
-	123
 </div>
