@@ -23,7 +23,6 @@ class Router
 	public function match() 
 	{
 		$url = trim($_SERVER['REQUEST_URI'], '/');
-		//echo 'url is '.$url.'<br>';
 		foreach ($this->routes as $route => $params) {
 			// echo $route.'<br>';
 			if (preg_match($route, $url)) {
@@ -41,28 +40,20 @@ class Router
 			if (class_exists($path)) {
 				$action = 'action_'.$this->params['action'];
 				
-				// echo $action;
-				// echo '<br>';
-				// echo $path;
-				// echo '<br>';
-				
 				if (method_exists($path, $action)) {
 					$controller = new $path($this->params);
 					$controller->$action();
 				} else {
 					$this::ErrorPage404();
-					// echo '404 - no such method';
-					//View::errorCode(404);
+					// '404 - no such method';
 				}
 			} else {
 				$this::ErrorPage404();
-				// echo '404 - no such class';
-				//View::errorCode(404);
+				// '404 - no such class';
 			}
 		} else {
 			$this::ErrorPage404();
-				// echo '404 - no such url in routes';
-				// View::errorCode(404);
+				// '404 - no such url in routes';
 		}
 	}
 	
