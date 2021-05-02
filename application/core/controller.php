@@ -32,19 +32,19 @@ abstract class Controller
 	public function checkAcl() {
 		$this->acl = require 'application/acl/'.$this->route['controller'].'.php';
 		if($this->isAcl('all')) {
-			// echo 'all';
+			// allow for all users;
 			return true;
 		}
 		elseif(!isset($_SESSION['user']) && $this->isAcl('guest')) {
-			//echo 'guest';
+			//allow for guests;
 			return true;
 		}
 		elseif(isset($_SESSION['user']) && $this->isAcl('authorize')) {
-			//echo 'auth';
+			//allow for auth users;
 			return true;
 		}
 		elseif(isset($_SESSION['user']) && $_SESSION['user']['login'] == 'admin' && $this->isAcl('admin')) {
-			//echo 'admin';
+			//allow for admin;
 			return true;
 		}
 		return false;
